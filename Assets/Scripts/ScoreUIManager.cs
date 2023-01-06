@@ -20,6 +20,6 @@ public class ScoreUIManager : MonoBehaviour
     void Update()
     {
         nameText = MenuManager.Instance.playerName;
-        scoreText.SetText($"{mainManager.highScoreHolder} : {mainManager.highScore}");
+        scoreText.SetText($"Best score : {mainManager.highScoreHolder} : {mainManager.highScore}");
     }
 }
