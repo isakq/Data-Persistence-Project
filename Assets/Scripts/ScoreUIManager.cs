@@ -5,18 +5,21 @@ using UnityEngine;
 
 public class ScoreUIManager : MonoBehaviour
 {
-    public string nameText;
+    public string nameText = "---";
 
     public TMP_Text scoreText;
+
+    public MainManager mainManager;
     // Start is called before the first frame update
     void Start()
     {
+        mainManager = FindObjectOfType<MainManager>().GetComponent<MainManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
         nameText = MenuManager.Instance.playerName;
-        scoreText.SetText(nameText);
+        scoreText.SetText($"{mainManager.highScoreHolder} : {mainManager.highScore}");
     }
 }

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
+using System.IO;
+using System.Xml.Serialization;
 
 public class MainManager : MonoBehaviour
 {
@@ -10,8 +13,11 @@ public class MainManager : MonoBehaviour
     public int LineCount = 6;
     public Rigidbody Ball;
 
-    public Text ScoreText;
+    public TMP_Text ScoreText;
     public GameObject GameOverText;
+
+    public int highScore = 0;
+    public string highScoreHolder = "---";
     
     private bool m_Started = false;
     private int m_Points;
@@ -36,6 +42,7 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+        LoadStuff();
     }
 
     private void Update()
@@ -70,9 +77,46 @@ public class MainManager : MonoBehaviour
 
     public void GameOver()
     {
+        if (m_Points > highScore)
+        {
+            highScore = m_Points;
+            SaveStuff();
+        }
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
+
+    [System.Serializable]
+
+    class SaveData
+    {
+        public string playerName;
+        public int highScore;
+    }
+
+    public void SaveStuff()
+    {
+        SaveData data = new SaveData();
+        data.playerName = MenuManager.Instance.playerName;
+        data.highScore = highScore;
+
+        string json = JsonUtility.ToJson(data);
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+    }
+
+    public void LoadStuff()
+    {
+        string path = Application.persistentDataPath + "/savefile.json";
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+            highScore = data.highScore;
+            highScoreHolder = data.playerName;
+        }
+    }
+
 
     
 }
